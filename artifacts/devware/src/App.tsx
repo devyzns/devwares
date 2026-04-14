@@ -79,7 +79,7 @@ function SavedConfig() {
           💾
         </div>
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Saved Rate (oil/s)</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">How much oil you make per second</p>
           {editing ? (
             <input
               autoFocus
