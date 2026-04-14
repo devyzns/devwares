@@ -271,7 +271,8 @@ export default function LayoutDesigner() {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-52 overflow-y-auto pr-1">
           {visibleDrills.map(def => {
             const isSel = selected === def.name;
-            const { cols: dc, rows: dr } = isSel ? effectiveDims(def, rotated) : { cols: def.cols, rows: def.rows };
+            const previewRotated = hoverCell != null && isSel ? autoRotated : false;
+            const { cols: dc, rows: dr } = effectiveDims(def, previewRotated);
             return (
               <button
                 key={def.name}
