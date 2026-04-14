@@ -4,8 +4,6 @@ import OilEarningsCalc from "@/components/OilEarningsCalc";
 import TimeToOilCalc from "@/components/TimeToOilCalc";
 import BuyTimeCalc from "@/components/BuyTimeCalc";
 import LayoutDesigner from "@/components/LayoutDesigner";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { parseAmount, formatNumber } from "@/lib/parsers";
 
 type Tab = "sellgas" | "oilearnings" | "timetooil" | "buytime" | "layout";
 
@@ -50,6 +48,15 @@ function Logo() {
   );
 }
 
+/* 💥 INSANE CREDIT COMPONENT */
+function Credit() {
+  return (
+    <span className="credit-glow">
+      Made with love — devyzn
+    </span>
+  );
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("sellgas");
   const [transitioning, setTransitioning] = useState(false);
@@ -73,17 +80,21 @@ export default function App() {
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 py-6">
 
-        {/* 🔥 MINIMAL HEADER */}
+        {/* HEADER */}
         <header className="flex items-center justify-between mb-6">
           <Logo />
 
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span>LIVE</span>
+          <div className="flex flex-col items-end gap-1 text-xs font-mono">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span>LIVE</span>
+            </div>
+
+            <Credit />
           </div>
         </header>
 
-        {/* Tabs */}
+        {/* TABS */}
         <nav className="card-glass rounded-xl p-1.5 mb-5">
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-1">
             {tabs.map((tab) => (
@@ -109,7 +120,7 @@ export default function App() {
           </div>
         </nav>
 
-        {/* Main panel */}
+        {/* MAIN */}
         <main
           className={`card-glass rounded-xl p-6 transition-opacity duration-150 ${
             transitioning ? "opacity-0" : "opacity-100"
@@ -133,33 +144,6 @@ export default function App() {
           {activeTab === "buytime" && <BuyTimeCalc />}
           {activeTab === "layout" && <LayoutDesigner />}
         </main>
-
-        {/* Input reference */}
-        {activeTab !== "layout" && (
-          <div className="mt-5 card-glass rounded-xl p-4">
-            <p className="text-xs text-muted-foreground uppercase mb-3">
-              Input Reference
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { label: "Amounts", examples: "1k · 1m · 1b · 2.5b" },
-                { label: "Percent", examples: "20% · 0.20 · 150%" },
-                { label: "Time", examples: "1h · 30m · 1h 30m" },
-                { label: "Mixed", examples: "1.5m · 500k · 10b" },
-              ].map((item) => (
-                <div key={item.label} className="bg-black/20 rounded-lg p-3">
-                  <p className="text-xs text-red-300/70 mb-1">
-                    {item.label}
-                  </p>
-                  <p className="text-xs font-mono text-muted-foreground">
-                    {item.examples}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <footer className="mt-5 text-center">
           <p className="text-xs text-muted-foreground/30 font-mono">
