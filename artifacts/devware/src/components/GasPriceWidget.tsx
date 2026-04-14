@@ -31,7 +31,7 @@ export default function GasPriceWidget() {
           ⛽
         </div>
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider">Current Gas Price</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider">What price you want your gas to sell for</p>
           {editing ? (
             <input
               autoFocus
