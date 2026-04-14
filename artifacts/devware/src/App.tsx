@@ -8,13 +8,13 @@ import GasPriceWidget from "@/components/GasPriceWidget";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { parseAmount, formatNumber } from "@/lib/parsers";
 
-type Tab = "sellgas" | "oilearnings" | "timetooil" | "buytime" | "layout";
+type Tab = "sell gas" | "oil earnings" | "time to oil" | "buy time" | "layout";
 
 const tabs: { id: Tab; label: string; icon: string; description: string }[] = [
-  { id: "sellgas",     label: "/sellgas",     icon: "⛽", description: "Gas Earnings" },
-  { id: "oilearnings", label: "/oilearnings", icon: "🛢", description: "Oil Generation" },
-  { id: "timetooil",  label: "/timetooil",   icon: "⏱", description: "Time to Target" },
-  { id: "buytime",    label: "/buytime",     icon: "⚙", description: "Buy Time" },
+  { id: "sellgas",     label: "Sell Gas",     icon: "⛽", description: "Gas Earnings" },
+  { id: "oilearnings", label: "oil earnings", icon: "🛢", description: "Oil Generation" },
+  { id: "timetooil",  label: "time to oil",   icon: "⏱", description: "How Long it Takes To Reach X oil" },
+  { id: "buytime",    label: "buy time",     icon: "⚙", description: "How Long it Takes to Buy Something" },
   { id: "layout",     label: "/layout",      icon: "🔲", description: "Layout Designer" },
 ];
 
