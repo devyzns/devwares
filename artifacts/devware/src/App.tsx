@@ -13,8 +13,8 @@ type Tab = "sell gas" | "oil earnings" | "time to oil" | "buy time" | "layout";
 const tabs: { id: Tab; label: string; icon: string; description: string }[] = [
   { id: "sellgas",     label: "Sell Gas",     icon: "⛽", description: "Gas Earnings" },
   { id: "oilearnings", label: "oil earnings", icon: "🛢", description: "Oil Generation" },
-  { id: "timetooil",  label: "time to oil",   icon: "⏱", description: "How Long it Takes To Reach X oil" },
-  { id: "buytime",    label: "buy time",     icon: "⚙", description: "How Long it Takes to Buy Something" },
+  { id: "timetooil",  label: "time to oil",   icon: "⏱", description: "Time to oil" },
+  { id: "buytime",    label: "buy time",     icon: "⚙", description: "Buy to time" },
   { id: "layout",     label: "/layout",      icon: "🔲", description: "Layout Designer" },
 ];
 
