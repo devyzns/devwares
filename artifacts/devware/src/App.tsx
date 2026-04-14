@@ -47,8 +47,8 @@ function Logo() {
       </div>
       <div>
         <h1 className="text-xl font-bold tracking-tight">
-          <span className="text-red-500 text-glow-red">Dev</span>
-          <span className="text-white">ware</span>
+          <span className="text-red-500 text-glow-red">DRILL</span>
+          <span className="text-white"> X</span>
         </h1>
         <p className="text-xs text-muted-foreground tracking-widest uppercase">Calculator Suite</p>
       </div>
