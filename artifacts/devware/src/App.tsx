@@ -50,7 +50,7 @@ function Logo() {
           <span className="text-red-500 text-glow-red">DRILL</span>
           <span className="text-white"> X</span>
         </h1>
-        <p className="text-xs text-muted-foreground tracking-widest uppercase">Calculator Suite</p>
+        <p className="text-xs text-muted-foreground tracking-widest uppercase">For Oil Empire on roblox.</p>
       </div>
     </div>
   );
