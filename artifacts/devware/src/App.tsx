@@ -238,7 +238,7 @@ export default function App() {
         )}
 
         <footer className="mt-5 text-center">
-          <p className="text-xs text-muted-foreground/30 font-mono">DEVWARE · Personal Tools · v1.1</p>
+          <p className="text-xs text-muted-foreground/30 font-mono">DRILLX · Personal Tools · v1.1</p>
         </footer>
       </div>
     </div>
