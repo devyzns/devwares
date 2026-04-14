@@ -15,7 +15,7 @@ const tabs: { id: Tab; label: string; icon: string; description: string }[] = [
   { id: "oilearnings", label: "oil earnings", icon: "🛢", description: "Oil Generation" },
   { id: "timetooil",  label: "time to oil",   icon: "⏱", description: "Time to oil" },
   { id: "buytime",    label: "buy time",     icon: "⚙", description: "Buy to time" },
-  { id: "layout",     label: "/layout",      icon: "🔲", description: "Layout Designer" },
+  { id: "layout",     label: "Layout",      icon: "🔲", description: "Layout Designer" },
 ];
 
 function ParticleOrb({ x, y, size, delay }: { x: number; y: number; size: number; delay: number }) {
