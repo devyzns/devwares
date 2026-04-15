@@ -1,156 +1,146 @@
-import { useState } from "react";
-import SellGasCalc from "@/components/SellGasCalc";
-import OilEarningsCalc from "@/components/OilEarningsCalc";
-import TimeToOilCalc from "@/components/TimeToOilCalc";
-import BuyTimeCalc from "@/components/BuyTimeCalc";
-import LayoutDesigner from "@/components/LayoutDesigner";
+import { useEffect, useState, type ComponentType } from "react";
 
-type Tab = "sellgas" | "oilearnings" | "timetooil" | "buytime" | "layout";
+import { modules as discoveredModules } from "./.generated/mockup-components";
 
-const tabs: { id: Tab; label: string; icon: string; description: string }[] = [
-  { id: "sellgas", label: "Sell Gas", icon: "⛽", description: "Gas Earnings" },
-  { id: "oilearnings", label: "Oil Earnings", icon: "🛢", description: "Oil Generation" },
-  { id: "timetooil", label: "Time to Oil", icon: "⏱", description: "Time to oil" },
-  { id: "buytime", label: "Buy Time", icon: "⚙", description: "Buy to time" },
-  { id: "layout", label: "Layout", icon: "🔲", description: "Layout Designer" },
-];
+type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
 
-function ParticleOrb({ x, y, size, delay }: { x: number; y: number; size: number; delay: number }) {
+function _resolveComponent(
+  mod: Record<string, unknown>,
+  name: string,
+): ComponentType | undefined {
+  const fns = Object.values(mod).filter(
+    (v) => typeof v === "function",
+  ) as ComponentType[];
   return (
-    <div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        width: size,
-        height: size,
-        background: `radial-gradient(circle, hsla(0, 85%, 55%, 0.15), transparent)`,
-        animation: `pulse-glow ${2 + delay}s ease-in-out infinite`,
-        animationDelay: `${delay}s`,
-        filter: "blur(1px)",
-      }}
-    />
+    (mod.default as ComponentType) ||
+    (mod.Preview as ComponentType) ||
+    (mod[name] as ComponentType) ||
+    fns[fns.length - 1]
   );
 }
 
-function Logo() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center">
-        <span className="text-white font-bold text-xs font-mono">DW</span>
-      </div>
+function PreviewRenderer({
+  componentPath,
+  modules,
+}: {
+  componentPath: string;
+  modules: ModuleMap;
+}) {
+  const [Component, setComponent] = useState<ComponentType | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-      <h1 className="text-lg font-bold tracking-tight">
-        <span className="text-red-500">DRILL</span>
-        <span className="text-white">X</span>
-      </h1>
-    </div>
-  );
+  useEffect(() => {
+    let cancelled = false;
+
+    setComponent(null);
+    setError(null);
+
+    async function loadComponent(): Promise<void> {
+      const key = `./components/mockups/${componentPath}.tsx`;
+      const loader = modules[key];
+      if (!loader) {
+        setError(`No component found at ${componentPath}.tsx`);
+        return;
+      }
+
+      try {
+        const mod = await loader();
+        if (cancelled) {
+          return;
+        }
+        const name = componentPath.split("/").pop()!;
+        const comp = _resolveComponent(mod, name);
+        if (!comp) {
+          setError(
+            `No exported React component found in ${componentPath}.tsx\n\nMake sure the file has at least one exported function component.`,
+          );
+          return;
+        }
+        setComponent(() => comp);
+      } catch (e) {
+        if (cancelled) {
+          return;
+        }
+
+        const message = e instanceof Error ? e.message : String(e);
+        setError(`Failed to load preview.\n${message}`);
+      }
+    }
+
+    void loadComponent();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [componentPath, modules]);
+
+  if (error) {
+    return (
+      <pre style={{ color: "red", padding: "2rem", fontFamily: "system-ui" }}>
+        {error}
+      </pre>
+    );
+  }
+
+  if (!Component) return null;
+
+  return <Component />;
 }
 
-/* 💥 INSANE CREDIT COMPONENT */
-function Credit() {
-  return (
-    <span className="credit-glow">
-      Made with love — devyzn
-    </span>
-  );
+function getBasePath(): string {
+  return import.meta.env.BASE_URL.replace(/\/$/, "");
 }
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("sellgas");
-  const [transitioning, setTransitioning] = useState(false);
+function getPreviewExamplePath(): string {
+  const basePath = getBasePath();
+  return `${basePath}/preview/ComponentName`;
+}
 
-  const switchTab = (tab: Tab) => {
-    if (tab === activeTab) return;
-    setTransitioning(true);
-    setTimeout(() => {
-      setActiveTab(tab);
-      setTransitioning(false);
-    }, 120);
-  };
-
-  const activeTabData = tabs.find((t) => t.id === activeTab)!;
-
+function Gallery() {
   return (
-    <div className="min-h-screen grid-bg relative overflow-hidden">
-      <ParticleOrb x={10} y={15} size={200} delay={0} />
-      <ParticleOrb x={85} y={70} size={160} delay={1.2} />
-      <ParticleOrb x={50} y={5} size={120} delay={0.7} />
-
-      <div className="relative z-10 max-w-2xl mx-auto px-4 py-6">
-
-        {/* HEADER */}
-        <header className="flex items-center justify-between mb-6">
-          <Logo />
-
-          <div className="flex flex-col items-end gap-1 text-xs font-mono">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span>LIVE</span>
-            </div>
-
-            <Credit />
-          </div>
-        </header>
-
-        {/* TABS */}
-        <nav className="card-glass rounded-xl p-1.5 mb-5">
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => switchTab(tab.id)}
-                className={`px-2 py-2.5 rounded-lg transition-all text-left ${
-                  activeTab === tab.id
-                    ? "bg-red-950/50 border border-red-800/60"
-                    : "hover:bg-white/5"
-                }`}
-              >
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-red-400 truncate">
-                    {tab.label}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground truncate">
-                    {tab.description}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </nav>
-
-        {/* MAIN */}
-        <main
-          className={`card-glass rounded-xl p-6 transition-opacity duration-150 ${
-            transitioning ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-5 pb-4 border-b border-red-900/30">
-            <div className="text-lg">{activeTabData.icon}</div>
-            <div>
-              <h2 className="text-sm font-bold text-red-400">
-                {activeTabData.label}
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                {activeTabData.description}
-              </p>
-            </div>
-          </div>
-
-          {activeTab === "sellgas" && <SellGasCalc />}
-          {activeTab === "oilearnings" && <OilEarningsCalc />}
-          {activeTab === "timetooil" && <TimeToOilCalc />}
-          {activeTab === "buytime" && <BuyTimeCalc />}
-          {activeTab === "layout" && <LayoutDesigner />}
-        </main>
-
-        <footer className="mt-5 text-center">
-          <p className="text-xs text-muted-foreground/30 font-mono">
-            DRILLX · v1.1
-          </p>
-        </footer>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
+      <div className="text-center max-w-md">
+        <h1 className="text-2xl font-semibold text-gray-900 mb-3">
+          Component Preview Server
+        </h1>
+        <p className="text-gray-500 mb-4">
+          This server renders individual components for the workspace canvas.
+        </p>
+        <p className="text-sm text-gray-400">
+          Access component previews at{" "}
+          <code className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">
+            {getPreviewExamplePath()}
+          </code>
+        </p>
       </div>
     </div>
   );
 }
+
+function getPreviewPath(): string | null {
+  const basePath = getBasePath();
+  const { pathname } = window.location;
+  const local =
+    basePath && pathname.startsWith(basePath)
+      ? pathname.slice(basePath.length) || "/"
+      : pathname;
+  const match = local.match(/^\/preview\/(.+)$/);
+  return match ? match[1] : null;
+}
+
+function App() {
+  const previewPath = getPreviewPath();
+
+  if (previewPath) {
+    return (
+      <PreviewRenderer
+        componentPath={previewPath}
+        modules={discoveredModules}
+      />
+    );
+  }
+
+  return <Gallery />;
+}
+
+export default App;
